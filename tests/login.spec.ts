@@ -1,8 +1,11 @@
 import {test, expect} from '@playwright/test';
 
+test.beforeEach(async ({ page }, testInfo ) => {
+  await page.goto('https://www.saucedemo.com/');
+});
+
 test.describe('Homepage - Login', ()=>{
   test('should be successfull if credentials are valid', async ({ page }) => {
-    await page.goto('https://www.saucedemo.com/');
     await page.getByRole('textbox', { name: 'Username' }).fill('standard_user');
     await page.getByRole('textbox', { name: 'Password' }).fill('secret_sauce');
     await page.getByRole('button', { name: 'Login' }).click();
@@ -10,7 +13,6 @@ test.describe('Homepage - Login', ()=>{
   });
 
   test('should fail if username is invalid', async ({ page }) => {
-    await page.goto('https://www.saucedemo.com/');
     await page.getByRole('textbox', { name: 'Username' }).fill('invalid_user');
     await page.getByRole('textbox', { name: 'Password' }).fill('secret_sauce');
     await page.getByRole('button', { name: 'Login' }).click();
@@ -20,7 +22,6 @@ test.describe('Homepage - Login', ()=>{
   });
 
   test('should fail if password is invalid', async ({ page }) => {
-    await page.goto('https://www.saucedemo.com/');
     await page.getByRole('textbox', { name: 'Username' }).fill('standard_user');
     await page.getByRole('textbox', { name: 'Password' }).fill('invalid_password');
     await page.getByRole('button', { name: 'Login' }).click();
