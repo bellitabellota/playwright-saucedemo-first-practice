@@ -1,7 +1,9 @@
 import {test, expect} from '@playwright/test';
 
+const URL = 'https://www.saucedemo.com/';
+
 test.beforeEach(async ({ page }, testInfo ) => {
-  await page.goto('https://www.saucedemo.com/');
+  await page.goto(URL);
 });
 
 test.describe('Homepage - Login', ()=>{
