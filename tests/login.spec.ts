@@ -2,14 +2,15 @@ import {test, expect, type Page} from '@playwright/test';
 import { LoginPage } from '../pages/login-page';
 
 const URL = 'https://www.saucedemo.com/';
-let loginPage: LoginPage;
-
-test.beforeEach(async ({ page }, testInfo ) => {
-  await page.goto(URL);
-  loginPage = new LoginPage(page);
-});
 
 test.describe('Homepage - Login', ()=>{
+  let loginPage: LoginPage;
+
+  test.beforeEach(async ({ page }, testInfo ) => {
+    await page.goto(URL);
+    loginPage = new LoginPage(page);
+  });
+
   test('should be successfull if credentials are valid', async ({ page }) => {
     await loginPage.login('standard_user', 'secret_sauce');
     await expect(page).toHaveURL(/.*inventory/);  
