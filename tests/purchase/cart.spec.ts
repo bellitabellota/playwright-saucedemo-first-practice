@@ -1,7 +1,20 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import { LoginPage } from '../../pages/login-page';
 
 const URL = 'https://www.saucedemo.com/';
+
+async function addfirstItemToCart(page: Page) {
+  const firstItemCard = page.locator('[data-test="inventory-item"]').first();
+  const itemName = await firstItemCard.locator('[data-test="inventory-item-name"]').innerText(); //use innerText() (is always string), rather than textContent() (is string or null)
+
+  await firstItemCard.getByRole('button', { name: 'Add to cart' }).click();
+
+  return itemName;
+}
+
+async function navigateToCart(page:Page) {
+  await page.locator('[data-test="shopping-cart-link"]').click();
+}
 
 test.describe('Cart functionality', () => {
   let loginPage: LoginPage;
@@ -30,5 +43,15 @@ test.describe('Cart functionality', () => {
     await page.locator('[data-test="shopping-cart-link"]').click();
 
     await expect(page.locator('[data-test="cart-list"]')).toContainText(`${itemName}`);
+  });
+
+  test('should remove item from cart when user clicks remove', async ({ page }) => {
+    const itemName = await addfirstItemToCart(page);
+    await navigateToCart(page);
+    const cartItem = page.locator('[data-test="inventory-item"]', { hasText: itemName });
+
+    await cartItem.getByRole('button', { name: 'Remove' }).click();
+    
+    await expect(cartItem).toHaveCount(0);
   });
 });
