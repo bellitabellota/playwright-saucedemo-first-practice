@@ -36,11 +36,8 @@ test.describe('Cart functionality', () => {
     });
 
   test('should add item to cart when user clicks add to cart', async ({ page }) => {
-    const firstItemCard = page.locator('[data-test="inventory-item"]').first();
-    const itemName = await firstItemCard.locator('[data-test="inventory-item-name"]').textContent();
-
-    await firstItemCard.getByRole('button', { name: 'Add to cart' }).click();
-    await page.locator('[data-test="shopping-cart-link"]').click();
+    const itemName = await addfirstItemToCart(page);
+    await navigateToCart(page);
 
     await expect(page.locator('[data-test="cart-list"]')).toContainText(`${itemName}`);
   });
