@@ -1,5 +1,5 @@
 import {test, expect, type Page} from '@playwright/test';
-import { LoginPage } from '../pages/login-page';
+import { LoginPage } from '../../pages/login-page';
 
 const URL = 'https://www.saucedemo.com/';
 
