@@ -42,6 +42,21 @@ test.describe('Cart functionality', () => {
     await expect(page.locator('[data-test="cart-list"]')).toContainText(`${itemName}`);
   });
 
+  test('should keep items in cart when navigating between pages', async ({ page }) => {
+    const itemName = await addfirstItemToCart(page);
+
+    const secondItemCard = page.locator('[data-test="inventory-item"]').nth(1);
+    const secondItemName = await secondItemCard.locator('[data-test="inventory-item-name"]').innerText();
+    await secondItemCard.getByRole('button', { name: 'Add to cart' }).click();
+
+    await navigateToCart(page);
+    await page.getByRole('button', {name:'Go back Continue Shopping' }).click();
+    await navigateToCart(page);
+
+    await expect(page.locator('[data-test="cart-list"]')).toContainText(`${itemName}`);
+    await expect(page.locator('[data-test="cart-list"]')).toContainText(`${secondItemName}`);
+  });
+
   test('should remove item from cart when user clicks remove', async ({ page }) => {
     const itemName = await addfirstItemToCart(page);
     await navigateToCart(page);
