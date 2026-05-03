@@ -3,11 +3,11 @@ import { LoginPage } from '../../pages/login-page';
 
 const URL = 'https://www.saucedemo.com/';
 
-async function addfirstItemToCart(page: Page) {
-  const firstItemCard = page.locator('[data-test="inventory-item"]').first();
-  const itemName = await firstItemCard.locator('[data-test="inventory-item-name"]').innerText(); //use innerText() (is always string), rather than textContent() (is string or null)
+async function addItemToCart(page: Page, itemIndex: number) {
+  const itemCard = page.locator('[data-test="inventory-item"]').nth(itemIndex);
+  const itemName = await itemCard.locator('[data-test="inventory-item-name"]').innerText(); //use innerText() (is always string), rather than textContent() (is string or null)
 
-  await firstItemCard.getByRole('button', { name: 'Add to cart' }).click();
+  await itemCard.getByRole('button', { name: 'Add to cart' }).click();
 
   return itemName;
 }
@@ -36,14 +36,14 @@ test.describe('Cart functionality', () => {
     });
 
   test('should add item to cart when user clicks add to cart', async ({ page }) => {
-    const itemName = await addfirstItemToCart(page);
+    const itemName = await addItemToCart(page, 0);
     await navigateToCart(page);
 
     await expect(page.locator('[data-test="cart-list"]')).toContainText(`${itemName}`);
   });
 
   test('should keep items in cart when navigating between pages', async ({ page }) => {
-    const itemName = await addfirstItemToCart(page);
+    const firstItemName = await addItemToCart(page, 0);
 
     const secondItemCard = page.locator('[data-test="inventory-item"]').nth(1);
     const secondItemName = await secondItemCard.locator('[data-test="inventory-item-name"]').innerText();
@@ -53,12 +53,12 @@ test.describe('Cart functionality', () => {
     await page.getByRole('button', {name:'Go back Continue Shopping' }).click();
     await navigateToCart(page);
 
-    await expect(page.locator('[data-test="cart-list"]')).toContainText(`${itemName}`);
+    await expect(page.locator('[data-test="cart-list"]')).toContainText(`${firstItemName}`);
     await expect(page.locator('[data-test="cart-list"]')).toContainText(`${secondItemName}`);
   });
 
   test('should remove item from cart when user clicks remove', async ({ page }) => {
-    const itemName = await addfirstItemToCart(page);
+    const itemName = await addItemToCart(page, 0);
     await navigateToCart(page);
     const cartItem = page.locator('[data-test="inventory-item"]', { hasText: itemName });
 
@@ -75,13 +75,13 @@ test.describe('Cart functionality', () => {
   });
 
   test('should update cart badge when items are added', async ({ page }) => {
-    await addfirstItemToCart(page);
+    await addItemToCart(page, 0);
     const cartBadge = page.locator('[data-test="shopping-cart-link"]').locator('[data-test="shopping-cart-badge"]');
     await expect(cartBadge).toHaveText('1');
   });
 
   test('should update cart badge when items are removed', async ({ page }) => {
-    const itemName = await addfirstItemToCart(page);
+    const itemName = await addItemToCart(page, 0);
 
     const cartBadge = page.locator('[data-test="shopping-cart-link"]').locator('[data-test="shopping-cart-badge"]');
     await expect(cartBadge).toHaveText('1');
