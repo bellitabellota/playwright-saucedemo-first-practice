@@ -54,6 +54,11 @@ test.describe('Cart functionality', () => {
     await expect(cartItem).toHaveCount(0);
   });
 
+  test('should display empty cart when no items are added', async ({ page }) => {
+    const cartBadge = page.locator('[data-test="shopping-cart-link"]').locator('[data-test="shopping-cart-badge"]');
+    await expect(cartBadge).toHaveCount(0);
+  });
+
   test('should update cart badge when items are added', async ({ page }) => {
     await addfirstItemToCart(page);
     const cartBadge = page.locator('[data-test="shopping-cart-link"]').locator('[data-test="shopping-cart-badge"]');
