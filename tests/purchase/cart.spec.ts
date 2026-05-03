@@ -47,6 +47,8 @@ test.describe('Cart functionality', () => {
     await navigateToCart(page);
     const cartItem = page.locator('[data-test="inventory-item"]', { hasText: itemName });
 
+    await expect(cartItem).toHaveCount(1);
+
     await cartItem.getByRole('button', { name: 'Remove' }).click();
     
     await expect(cartItem).toHaveCount(0);
