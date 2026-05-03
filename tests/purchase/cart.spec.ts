@@ -45,9 +45,7 @@ test.describe('Cart functionality', () => {
   test('should keep items in cart when navigating between pages', async ({ page }) => {
     const firstItemName = await addItemToCart(page, 0);
 
-    const secondItemCard = page.locator('[data-test="inventory-item"]').nth(1);
-    const secondItemName = await secondItemCard.locator('[data-test="inventory-item-name"]').innerText();
-    await secondItemCard.getByRole('button', { name: 'Add to cart' }).click();
+    const secondItemName = await addItemToCart(page, 1);
 
     await navigateToCart(page);
     await page.getByRole('button', {name:'Go back Continue Shopping' }).click();
