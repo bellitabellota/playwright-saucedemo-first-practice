@@ -42,6 +42,18 @@ test.describe('Cart functionality', () => {
     await expect(page.locator('[data-test="cart-list"]')).toContainText(`${itemName}`);
   });
 
+  test.only('should display all added items in the cart when multiple products are added', async ({ page }) => {
+    const firstItemName = await addItemToCart(page, 0);
+    const secondItemName = await addItemToCart(page, 1);
+    const thirdItemName = await addItemToCart(page, 2);
+
+    await navigateToCart(page);
+
+    await expect(page.locator('[data-test="cart-list"]')).toContainText(`${firstItemName}`);
+    await expect(page.locator('[data-test="cart-list"]')).toContainText(`${secondItemName}`);
+    await expect(page.locator('[data-test="cart-list"]')).toContainText(`${thirdItemName}`);
+  });
+
   test('should keep items in cart when navigating between pages', async ({ page }) => {
     const firstItemName = await addItemToCart(page, 0);
 
