@@ -64,4 +64,16 @@ test.describe('Cart functionality', () => {
     const cartBadge = page.locator('[data-test="shopping-cart-link"]').locator('[data-test="shopping-cart-badge"]');
     await expect(cartBadge).toHaveText('1');
   });
+
+  test('should update cart badge when items are removed', async ({ page }) => {
+    const itemName = await addfirstItemToCart(page);
+
+    const cartBadge = page.locator('[data-test="shopping-cart-link"]').locator('[data-test="shopping-cart-badge"]');
+    await expect(cartBadge).toHaveText('1');
+
+    const cartItem = page.locator('[data-test="inventory-item"]', { hasText: itemName });
+    await cartItem.getByRole('button', { name: 'Remove' }).click();
+
+    await expect(cartBadge).toHaveCount(0);
+  });
 });
